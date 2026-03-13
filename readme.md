@@ -1,4 +1,4 @@
-**AI Data Pipeline Impact Analyzer**
+🚀 AI Data Pipeline Impact Analyzer
 
 Traditional RAG vs Graphical RAG Comparison
 
