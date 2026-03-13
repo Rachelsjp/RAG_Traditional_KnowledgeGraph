@@ -96,7 +96,7 @@ AI_Data_Pipeline_Impact_Analyzer
 ```
 ________________________________________
 **How Traditional RAG Works in This Project**
-
+```
 1️⃣ Load pipeline documentation The system reads pipeline documentation from the provided data files.
 2️⃣ Split documents into chunks Large documents are divided into smaller text chunks for better retrieval.
 3️⃣ Generate vector embeddings Each chunk is converted into vector embeddings using the model:
@@ -108,9 +108,10 @@ The query is converted into an embedding
 The vector database retrieves top-k similar chunks
 Retrieved context is sent to OpenAI GPT-3.5
 The LLM generates the final natural language answer
+```
 ________________________________________
 **How Knowledge Graph RAG Works in This Project**
-
+```
 Instead of storing unstructured documents, this approach stores structured data lineage relationships inside Neo4j.
 Graph Nodes
 The knowledge graph contains the following entities:
@@ -130,7 +131,7 @@ Example query:
 MATCH (t:Table {name:'fact_orders'})-[:USED_IN]->(d:Dashboard) RETURN d.name
 3️⃣ Neo4j performs graph traversal to retrieve exact relationships
 4️⃣ The system returns precise results directly from the graph
-
+```
 ________________________________________
 **Example Questions**
 
