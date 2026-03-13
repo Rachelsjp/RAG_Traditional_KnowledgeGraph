@@ -1,4 +1,4 @@
-AI Data Pipeline Impact Analyzer
+**AI Data Pipeline Impact Analyzer**
 Traditional RAG vs Graphical RAG Comparison
 
 This project demonstrates the difference between Traditional Retrieval-Augmented Generation (RAG) and Graph-based RAG (Knowledge Graph RAG) using a simplified data warehouse pipeline example.
