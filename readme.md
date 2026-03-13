@@ -71,67 +71,97 @@ ________________________________________
 
 ## Project Structure
 
-AI_Data_Pipeline_Impact_Analyzer/
+```
+AI_Data_Pipeline_Impact_Analyzer
 │
-├── data/
+├── data
 │   └── pipeline_docs.docx
 │
-├── document_loader.py        # Loads documents for Traditional RAG
-├── chunk_documents.py        # Splits documents into chunks
-├── vector_store.py           # Creates embeddings and vector database
-├── rag_query.py              # Handles Traditional RAG queries
+├── document_loader.py      # Loads documents for Traditional RAG
+├── chunk_documents.py      # Splits documents into chunks
+├── vector_store.py         # Creates embeddings and vector database
+├── rag_query.py            # Handles Traditional RAG queries
 │
-├── graph_loader.py           # Loads nodes and relationships into Neo4j
-├── graph_query.py            # Executes Knowledge Graph queries
+├── graph_loader.py         # Loads nodes and relationships into Neo4j
+├── graph_query.py          # Executes Knowledge Graph queries
 │
-├── rag_comparison_app.py     # Streamlit UI to compare both approaches
+├── rag_comparison_app.py   # Streamlit UI to compare both approaches
 │
-├── images/
+├── images
 │   ├── architecture.png
 │   └── neo4j_graph.png
 │
-├── .env                      # Stores API keys (not uploaded to GitHub)
+├── .env                    # Stores API keys (not uploaded to GitHub)
 └── README.md
+```
 ________________________________________
-**How Traditional RAG Works in This Project**
+How Traditional RAG Works in This Project
 
 1️⃣ Load pipeline documentation
 The system reads pipeline documentation from the provided data files.
+
 2️⃣ Split documents into chunks
 Large documents are divided into smaller text chunks for better retrieval.
+
 3️⃣ Generate vector embeddings
 Each chunk is converted into vector embeddings using the model:
-•	all-MiniLM-L6-v2
+
+all-MiniLM-L6-v2
+
 4️⃣ Store embeddings in a vector database
-The embeddings are stored in Chroma, which acts as the vector store.
-5️⃣ Answer generation process
+Embeddings are stored in the vector database Chroma.
+
+5️⃣ Answer generation
+
 When a user asks a question:
-•	The query is converted into an embedding
-•	The vector database retrieves the top-k most similar chunks
-•	Retrieved context is sent to OpenAI GPT 3.5
-•	The LLM generates a natural language answer based on the retrieved context
+
+The query is converted into an embedding
+
+The vector database retrieves top-k similar chunks
+
+Retrieved context is sent to OpenAI GPT-3.5
+
+The LLM generates the final natural language answer
 ________________________________________
-**How Knowledge Graph RAG Works in This Project**
+How Knowledge Graph RAG Works in This Project
 
 Instead of storing unstructured documents, this approach stores structured data lineage relationships inside Neo4j.
+
 Graph Nodes
+
 The knowledge graph contains the following entities:
-•	Systems
-•	Tables
-•	Dashboards
+
+Systems
+
+Tables
+
+Dashboards
+
 Graph Relationships
+
 The relationships capture how data flows through the pipeline:
-•	System → FEEDS → Table
-•	Table → DEPENDS_ON → Table
-•	Table → USED_IN → Dashboard
+
+System → FEEDS → Table
+
+Table → DEPENDS_ON → Table
+
+Table → USED_IN → Dashboard
+
 Query Execution Process
+
 When a user asks a question:
+
 1️⃣ The system identifies the table or entity mentioned in the query
+
 2️⃣ A Cypher query is executed against the knowledge graph
+
 Example query:
+
 MATCH (t:Table {name:'fact_orders'})-[:USED_IN]->(d:Dashboard)
 RETURN d.name
+
 3️⃣ Neo4j performs graph traversal to retrieve exact relationships
+
 4️⃣ The system returns precise results directly from the graph
 ________________________________________
 **Example Questions**
