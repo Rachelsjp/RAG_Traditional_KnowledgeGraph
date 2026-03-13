@@ -1,4 +1,4 @@
-🚀 AI Data Pipeline Impact Analyzer
+**🚀 AI Data Pipeline Impact Analyzer**
 
 Traditional RAG vs Graphical RAG Comparison
 
@@ -6,7 +6,8 @@ This project demonstrates the difference between Traditional Retrieval-Augmented
 The application allows users to ask questions about systems, tables, and dashboards, and compares how document-based retrieval and graph-based reasoning answer the same question.
 A Streamlit interface displays answers side-by-side to highlight the differences.
 ________________________________________
-Project Goal
+**Project Goal**
+
 Data teams often need to answer questions like:
 •	Which dashboards use fact_orders?
 •	What tables does fact_orders depend on?
@@ -55,7 +56,8 @@ ________________________________________
                 └─────────────┘
 ```
 ________________________________________
-Technologies Used
+**Technologies Used**
+
 Component	Technology
 UI	Streamlit
 RAG Framework	LangChain
@@ -66,65 +68,84 @@ Graph Database	Neo4j
 Graph Query Language	Cypher
 Document Loader	LangChain Community
 ________________________________________
-Project Structure
-project_folder
+
+## Project Structure
+
+AI_Data_Pipeline_Impact_Analyzer/
 │
 ├── data/
 │   └── pipeline_docs.docx
 │
-├── document_loader.py
-├── chunk_documents.py
-├── vector_store.py
-├── rag_query.py
+├── document_loader.py        # Loads documents for Traditional RAG
+├── chunk_documents.py        # Splits documents into chunks
+├── vector_store.py           # Creates embeddings and vector database
+├── rag_query.py              # Handles Traditional RAG queries
 │
-├── graph_loader.py
-├── graph_query.py
+├── graph_loader.py           # Loads nodes and relationships into Neo4j
+├── graph_query.py            # Executes Knowledge Graph queries
 │
-├── rag_comparison_app.py
+├── rag_comparison_app.py     # Streamlit UI to compare both approaches
 │
-├── .env
+├── images/
+│   ├── architecture.png
+│   └── neo4j_graph.png
+│
+├── .env                      # Stores API keys (not uploaded to GitHub)
 └── README.md
 ________________________________________
-How Traditional RAG Works in This Project
+**How Traditional RAG Works in This Project**
+
 1️⃣ Load pipeline documentation
+The system reads pipeline documentation from the provided data files.
 2️⃣ Split documents into chunks
-3️⃣ Convert chunks into vector embeddings
-Model used:
-all-MiniLM-L6-v2
-4️⃣ Store embeddings in ChromaDB
-5️⃣ When a user asks a question:
-•	Query is embedded
-•	Vector DB retrieves top-k similar chunks
-•	Context is sent to OpenAI GPT-3.5
-•	LLM generates the answer
+Large documents are divided into smaller text chunks for better retrieval.
+3️⃣ Generate vector embeddings
+Each chunk is converted into vector embeddings using the model:
+•	all-MiniLM-L6-v2
+4️⃣ Store embeddings in a vector database
+The embeddings are stored in Chroma, which acts as the vector store.
+5️⃣ Answer generation process
+When a user asks a question:
+•	The query is converted into an embedding
+•	The vector database retrieves the top-k most similar chunks
+•	Retrieved context is sent to OpenAI GPT 3.5
+•	The LLM generates a natural language answer based on the retrieved context
 ________________________________________
-How Graphical RAG Works in This Project
-Instead of documents, we store structured relationships in Neo4j.
-Graph nodes include:
+**How Knowledge Graph RAG Works in This Project**
+
+Instead of storing unstructured documents, this approach stores structured data lineage relationships inside Neo4j.
+Graph Nodes
+The knowledge graph contains the following entities:
 •	Systems
 •	Tables
 •	Dashboards
-Relationships include:
-System → FEEDS → Table
-Table → DEPENDS_ON → Table
-Table → USED_IN → Dashboard
-When a question is asked:
-1️⃣ Identify table mentioned in question
-2️⃣ Run Cypher query
-Example:
+Graph Relationships
+The relationships capture how data flows through the pipeline:
+•	System → FEEDS → Table
+•	Table → DEPENDS_ON → Table
+•	Table → USED_IN → Dashboard
+Query Execution Process
+When a user asks a question:
+1️⃣ The system identifies the table or entity mentioned in the query
+2️⃣ A Cypher query is executed against the knowledge graph
+Example query:
 MATCH (t:Table {name:'fact_orders'})-[:USED_IN]->(d:Dashboard)
 RETURN d.name
-3️⃣ Return exact results from graph traversal
+3️⃣ Neo4j performs graph traversal to retrieve exact relationships
+4️⃣ The system returns precise results directly from the graph
 ________________________________________
-Example Questions
+**Example Questions**
+
 Which dashboards use fact_orders?
 
 What tables does fact_orders depend on?
 
 Which system feeds dim_customer?
 ________________________________________
-Setup Instructions
+**Setup Instructions**
+
 Install Dependencies
+
 pip install langchain
 pip install langchain-community
 pip install langchain-openai
@@ -136,32 +157,40 @@ pip install streamlit
 pip install neo4j
 ________________________________________
 Add OpenAI API Key
+
 Create .env file
 ________________________________________
 Create Vector Database
+
 Run:
 python vector_store.py
 This generates the Chroma vector database.
 ________________________________________
 Load Graph Data
+
 Run:
 python graph_loader.py
 This loads nodes and relationships into Neo4j.
 ________________________________________
 Start the Application
+
 streamlit run rag_comparison_app.py
 Open browser:
 http://localhost:8501
 ________________________________________
-Traditional RAG vs Graph RAG
-Feature	Traditional RAG	Graph RAG
-Data source	Documents	Knowledge Graph
-Retrieval	Semantic search	Graph traversal
-Uses LLM	Yes	Optional
-Accuracy for relationships	Medium	High
-Best for	Unstructured knowledge	Data lineage
+## Traditional RAG vs Knowledge Graph RAG
+
+| Feature | Traditional RAG | Knowledge Graph RAG |
+|--------|----------------|---------------------|
+| Data Source | Unstructured documents | Structured knowledge graph |
+| Storage | Vector database (embeddings) | Graph database |
+| Retrieval Method | Semantic similarity search | Graph traversal using relationships |
+| Uses LLM | Yes | Optional (can return direct query results) |
+| Relationship Accuracy | Medium | High |
+| Best Use Case | Document-based Q&A | Data lineage, dependency analysis |
 ________________________________________
-Visual Comparison
+**Visual Comparison**
+
 Traditional RAG
 
 User Question
@@ -198,13 +227,14 @@ Graph Traversal
       ▼
 Answer
 ________________________________________
-Key Learning
+**Key Learning**
+
 This project shows that:
 •	Traditional RAG is ideal for document understanding
 •	Graph RAG is better for structured relationships like data pipelines
 •	Combining both approaches can create powerful AI data assistants
 ________________________________________
-Knowledge Graph Visualization (Neo4j)
+**Knowledge Graph Visualization (Neo4j)**
 
 The Graph RAG implementation stores the data pipeline structure in a Neo4j knowledge graph.
 
@@ -224,24 +254,26 @@ Below is the visualization of the graph in Neo4j Browser.
 
 ![Neo4j Graph](images/neo4j_graph.png)
 ________________________________________
-Architecture Diagram
+**Architecture Diagram**
 
 ![RAG Architecture](images/rag_architecture.png)
 ________________________________________
-Application Demo
+**Application Demo**
 
 Below is the Streamlit application comparing Traditional RAG and Graph RAG.
 
 ![App Screenshot](images/app_demo.png)
 ________________________________________
-Future Improvements
+**Future Improvements**
+
 •	Automatic question classification
 •	LLM-generated Cypher queries
 •	LangChain GraphRAG integration
 •	Graph visualization inside UI
 •	Support for large enterprise data pipelines
 ________________________________________
-Author
+**Author**
+
 Rachel Purnima Johnpeter
 
 
