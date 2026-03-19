@@ -2,21 +2,27 @@
 
 Traditional RAG vs Graphical RAG Comparison
 
-This project demonstrates the difference between Traditional Retrieval-Augmented Generation (RAG) and Graph-based RAG (Knowledge Graph RAG) using a simplified data warehouse pipeline example.
-The application allows users to ask questions about systems, tables, and dashboards, and compares how document-based retrieval and graph-based reasoning answer the same question.
-A Streamlit interface displays answers side-by-side to highlight the differences.
+This project demonstrates the difference between Traditional Retrieval-Augmented Generation (RAG) and Graph-based RAG (Knowledge Graph RAG) using a simplified data warehouse pipeline example. The application allows users to ask questions about systems, tables, and dashboards, and compares how document-based retrieval and graph-based reasoning answer the same question. A Streamlit interface displays answers side-by-side to highlight the differences.
+
+👉 Traditional RAG provides contextual and explanatory answers, while Knowledge Graph RAG provides precise and deterministic answers based on relationships.
 ________________________________________
-**Project Goal**
+## Project Goal
 
 Data teams often need to answer questions like:
-•	Which dashboards use fact_orders?
-•	What tables does fact_orders depend on?
-•	Which source system feeds dim_customer?
+
+- Which dashboards use fact_orders?
+- What tables does fact_orders depend on?
+- Which source system feeds dim_customer?
+
 This project demonstrates two AI approaches:
-Traditional RAG
-Uses documents + embeddings + LLM reasoning
-Graphical RAG
-Uses a knowledge graph to query structured relationships
+
+### 🔹 Traditional RAG
+- Uses documents + embeddings + LLM reasoning
+- Provides contextual, descriptive answers
+
+### 🔹 Knowledge Graph RAG
+- Uses a knowledge graph to query structured relationships
+- Provides precise and deterministic results
 ________________________________________
 ## Architecture Overview
 
@@ -55,6 +61,22 @@ ________________________________________
                 │ answer      │
                 └─────────────┘
 ```
+________________________________________
+## 🔥 Key Difference Between Traditional RAG and Knowledge Graph
+
+| Aspect | Traditional RAG | Knowledge Graph RAG |
+|-------|----------------|---------------------|
+| Answer Type | Contextual, explanatory | Precise, relationship-based |
+| Behavior | Generates answers using LLM | Retrieves exact graph relationships |
+| Strength | Explains "how" and "why" | Answers "what" and "where" |
+| Limitation | Can be verbose or inconsistent | Limited to predefined relationships |
+
+👉 Example:
+
+Query: *Explain how fact_orders is used in dashboards*
+
+- **Traditional RAG** → Explains usage, business context, dependencies  
+- **Knowledge Graph** → Returns: Sales Dashboard, Revenue Dashboard
 ________________________________________
 **Technologies Used**
 
@@ -226,12 +248,14 @@ Graph Traversal
       ▼
 Answer
 ________________________________________
-**Key Learning**
+## Key Learning
 
-This project shows that:
-•	Traditional RAG is ideal for document understanding
-•	Graph RAG is better for structured relationships like data pipelines
-•	Combining both approaches can create powerful AI data assistants
+This project demonstrates that:
+
+- Traditional RAG is powerful for understanding and explaining document-based knowledge
+- Knowledge Graph RAG is highly reliable for querying structured relationships
+- RAG answers **how and why**, while Knowledge Graph answers **what and where**
+- Combining both approaches enables more robust AI data assistants
 ________________________________________
 **Knowledge Graph Visualization (Neo4j)**
 
@@ -274,5 +298,21 @@ ________________________________________
 **Author**
 
 Rachel Purnima Johnpeter
+________________________________________
+## ⭐ Notes
+
+This project was built as part of hands-on learning in:
+
+- Retrieval-Augmented Generation (RAG) using LangChain
+- Knowledge Graph modeling and querying using Neo4j
+- Designing hybrid AI systems combining unstructured + structured data
+- Building end-to-end GenAI applications using Streamlit
+- Understanding the trade-offs between LLM-based reasoning and deterministic graph queries
+
+It also helped in exploring how AI can be applied to real-world data problems like:
+
+- Data lineage analysis  
+- Impact analysis in data pipelines  
+- Metadata-driven insights for analytics teams
 
 
