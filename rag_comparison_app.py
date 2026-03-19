@@ -38,7 +38,8 @@ if question:
         st.subheader("Traditional RAG Answer")
 
         try:
-            answer = get_rag_answer(question)
+            with st.spinner("Generating response..."):  # ✅ only addition (no UI change impact)
+                answer = get_rag_answer(question)
             st.write(answer)
 
         except Exception as e:
@@ -59,16 +60,15 @@ if question:
 
             else:
 
-                if "depend" in question.lower():
+                q_lower = question.lower()  # ✅ improvement (no UI impact)
 
+                if "depend" in q_lower or "dependency" in q_lower:
                     results = find_dependencies(table)
 
-                elif "feed" in question.lower() or "source" in question.lower():
-
+                elif "feed" in q_lower or "source" in q_lower:
                     results = find_source_system(table)
 
                 else:
-
                     results = find_dashboards(table)
 
 

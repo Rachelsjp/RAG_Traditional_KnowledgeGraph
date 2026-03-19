@@ -1,14 +1,33 @@
 from neo4j import GraphDatabase
 
-# Connection details
+# -----------------------------
+# Step 1 — Connection details
+# -----------------------------
 uri = "bolt://127.0.0.1:7687"
 username = "neo4j"
-password = "your_neo4j_password"  # your password here
+password = "*****"  # 🔁 replace with your actual password
 
-# Create driver
+# -----------------------------
+# Step 2 — Create driver
+# -----------------------------
 driver = GraphDatabase.driver(uri, auth=(username, password))
 
-# Function to load graph data safely
+# -----------------------------
+# Step 3 — Test connection
+# -----------------------------
+try:
+    with driver.session() as session:
+        session.run("RETURN 1")
+    print("✅ Connected to Neo4j successfully")
+except Exception as e:
+    print("❌ Failed to connect to Neo4j")
+    print(e)
+    exit()
+
+
+# -----------------------------
+# Step 4 — Load graph data
+# -----------------------------
 def load_graph(tx):
     # Create Systems
     tx.run("MERGE (crm:System {name:'CRM System'})")
@@ -25,44 +44,48 @@ def load_graph(tx):
     tx.run("MERGE (inventory:Dashboard {name:'Inventory Dashboard'})")
 
     # Connect Systems → Tables
-    tx.run("MATCH (crm:System {name:'CRM System'}), (cust:Table {name:'dim_customer'}) "
-           "MERGE (crm)-[:FEEDS]->(cust)")
-    tx.run("MATCH (erp:System {name:'ERP System'}), (orders:Table {name:'fact_orders'}) "
-           "MERGE (erp)-[:FEEDS]->(orders)")
+    tx.run("""
+        MATCH (crm:System {name:'CRM System'}), (cust:Table {name:'dim_customer'})
+        MERGE (crm)-[:FEEDS]->(cust)
+    """)
 
-    # Connect Tables → Tables (dependencies)
-    tx.run("MATCH (orders:Table {name:'fact_orders'}), (cust:Table {name:'dim_customer'}) "
-           "MERGE (orders)-[:DEPENDS_ON]->(cust)")
+    tx.run("""
+        MATCH (erp:System {name:'ERP System'}), (orders:Table {name:'fact_orders'})
+        MERGE (erp)-[:FEEDS]->(orders)
+    """)
+
+    # Connect Tables → Tables
+    tx.run("""
+        MATCH (orders:Table {name:'fact_orders'}), (cust:Table {name:'dim_customer'})
+        MERGE (orders)-[:DEPENDS_ON]->(cust)
+    """)
 
     # Connect Tables → Dashboards
-    tx.run("MATCH (orders:Table {name:'fact_orders'}), (sales:Dashboard {name:'Sales Dashboard'}) "
-           "MERGE (orders)-[:USED_IN]->(sales)")
-    tx.run("MATCH (orders:Table {name:'fact_orders'}), (rev:Dashboard {name:'Revenue Dashboard'}) "
-           "MERGE (orders)-[:USED_IN]->(rev)")
-    tx.run("MATCH (prod:Table {name:'dim_product'}), (inventory:Dashboard {name:'Inventory Dashboard'}) "
-           "MERGE (prod)-[:USED_IN]->(inventory)")
+    tx.run("""
+        MATCH (orders:Table {name:'fact_orders'}), (sales:Dashboard {name:'Sales Dashboard'})
+        MERGE (orders)-[:USED_IN]->(sales)
+    """)
 
-# Execute graph loading
+    tx.run("""
+        MATCH (orders:Table {name:'fact_orders'}), (rev:Dashboard {name:'Revenue Dashboard'})
+        MERGE (orders)-[:USED_IN]->(rev)
+    """)
+
+    tx.run("""
+        MATCH (prod:Table {name:'dim_product'}), (inventory:Dashboard {name:'Inventory Dashboard'})
+        MERGE (prod)-[:USED_IN]->(inventory)
+    """)
+
+
+# -----------------------------
+# Step 5 — Execute
+# -----------------------------
 with driver.session() as session:
     session.execute_write(load_graph)
 
-print("Graph data loaded successfully! ✅")
+print("✅ Graph data loaded successfully!")
 
-#Delete all existing nodes and relationships
-#MATCH (n)
-#DETACH DELETE n
-
-#VISUALIZATION QUERY
-#MATCH (n)-[r]->(m)
-#RETURN DISTINCT n, r, m
-
-#See all nodes with labels and properties
-#MATCH (n)
-#RETURN n, labels(n)
-
-#See all relationships
-#MATCH (a)-[r]->(b)
-#RETURN a.name AS From, type(r) AS Relationship, b.name AS To
-
-#to connect neo4j in browser
-#RETURN 'Neo4j connected!' AS message
+# -----------------------------
+# Step 6 — Close connection
+# -----------------------------
+driver.close()
